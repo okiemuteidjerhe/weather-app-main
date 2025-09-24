@@ -1,0 +1,98 @@
+@import url('https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,200..800&family=DM+Sans:ital,opsz,wght@0,9..40,100..1000;1,9..40,100..1000&display=swap');
+@import "tailwindcss";
+
+
+@theme{
+    --color-Neutal-900: hsl(243, 96%, 9%);
+    --color-Neutal-800: hsl(243, 27%, 20%);
+    --color-Neutral-700: hsl(243, 23%, 24%);
+    --color-Neutral-600: hsl(243, 23%, 30%);
+    --color-Neutral-300:  hsl(240, 6%, 70%);
+    --color-Neutral-200: hsl(250, 6%, 84%);
+    --color-Neutral-0: hsl(0, 0%, 100%);
+    --color-Orange-500: hsl(28, 100%, 52%);
+    --color-Blue-500: hsl(233, 67%, 56%);
+    --color-Blue-700: hsl(248, 70%, 36%);
+    --font-DM-Sans: 'DM-Sans', sans-serif;
+    --font-Bricolage: "Bricolage Grotesque", sans-serif;
+}
+
+@layer base{
+    body{
+        background-color: var(--color-Neutal-900);
+        color: var(--color-Neutral-0);
+    }
+}
+
+@layer utilities {
+    .text-preset-1{
+        font-size: 6rem;
+        line-height: 100%;
+        letter-spacing: -2px;
+        font-family: var(--font-DM-Sans);
+        font-weight: 600;
+        font-style: italic;
+    }
+
+    .text-preset-2{
+        font-size: 3.25rem;
+        line-height: 120%;
+        letter-spacing: 0;
+        font-family: var(--font-Bricolage);
+        font-weight: 700;
+    }
+    .text-preset-3{
+        font-size: 2rem;
+        line-height: 100%;
+        letter-spacing: 0;
+        font-family: var(--font-DM-Sans);
+        font-weight: 300;
+    }
+    .text-preset-4{
+        font-size: 1.75rem;
+        line-height: 120%;
+        letter-spacing: 0;
+        font-family: var(--font-DM-Sans);
+        font-weight: 700;
+    }
+    .text-preset-5{
+        font-size: 1.25rem;
+        line-height: 120%;
+        letter-spacing: 0;
+        font-family: var(--font-DM-Sans);
+        font-weight: 600;
+    }
+    .text-preset-5-medium{
+        font-size: 1.25rem;
+        line-height: 120%;
+        letter-spacing: 0;
+        font-family: var(--font-DM-Sans);
+        font-weight: 500;
+    }
+    .text-preset-6{
+        font-size: 1.125rem;
+        line-height: 120%;
+        letter-spacing: 0;
+        font-family: var(--font-DM-Sans);
+        font-weight: 500;
+    }
+    .text-preset-7{
+        font-size: 1rem;
+        line-height: 120%;
+        letter-spacing: 0;
+        font-family: var(--font-DM-Sans);
+        font-weight: 500;
+    }
+    .text-preset-8{
+        font-size: 0.875rem;
+        line-height: 120%;
+        letter-spacing: 0;
+        font-family: var(--font-DM-Sans);
+        font-weight: 500;
+    }
+    .bg-small{
+        background-image: url(./assets/images/bg-today-small.svg);
+        background-repeat: no-repeat;
+        background-size: contain;
+    }
+}
