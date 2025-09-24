@@ -153,46 +153,46 @@ const hourlyForeCast = hourly.map((hour, index) => {
 
 export default function MainContent(){
     return(
-        <main className="px-4 mb-8">
-            <h1 className="my-12 text-center text-preset-2 text-Neutral-0">How is the sky looking today?</h1>
-            <form role="search" className="mb-8 flex flex-col gap-3">
-                <div className="flex py-4 px-6 gap-4 items-center bg-Neutral-700 rounded-xl">
+        <main className="px-4 mb-8 sm:px-6 md:px-28">
+            <h1 className="my-12 text-center text-preset-2 text-Neutral-0 sm:px-[119px]">How is the sky looking today?</h1>
+            <form role="search" className="mb-8 flex flex-col gap-3 sm:flex-row sm:gap-4 md:px-[280px]">
+                <div className="flex py-4 px-6 gap-4 items-center bg-Neutral-700 rounded-xl hover:bg-Neutral-800 focus-within:outline-1 focus-within::outline-Neutral-0 focus-within:outline-offset-2 sm:grow">
                     <img src={search} alt="" className="w-5 h-5"/>
-                    <input type="search" name="city" id="" placeholder="Search for a place..." className="text-preset-5-medium text-Neutral-200" aria-label="Search for a place"/>
+                    <input type="search" name="city" id="" placeholder="Search for a place..." className="outline-0 text-preset-5-medium text-Neutral-200 w-full" aria-label="Search for a place"/>
                 </div>
-                <button className="bg-Blue-500 text-Neutral-0 rounded-xl py-4 px-6 text-preset-5-medium">Search</button>
+                <button className="cursor-pointer bg-Blue-500 text-Neutral-0 rounded-xl py-4 px-6 text-preset-5-medium hover:bg-Blue-700 focus:outline-1 focus:outline-Blue-700 focus:outline-offset-2">Search</button>
             </form>
-            <div className="flex flex-col gap-8">
-                <section className="flex flex-col gap-8">
-                    <div className="flex flex-col gap-5">
-                        <div className="bg-small flex flex-col gap-4 px-6 py-10">
+            <div className="flex flex-col gap-8 md:flex-row">
+                <section className="flex flex-col gap-8 md:justify-between">
+                    <div className="flex flex-col gap-5 md:gap-8">
+                        <div className="bg-small  rounded-[20px] flex flex-col gap-4 px-6 py-10 sm:bg-large sm:px-6 sm:py-20 sm:flex-row sm:items-center sm:justify-between">
                             <div className="flex flex-col gap-3 items-center">
                                 <h3 className="text-preset-4 text-Neutral-0">Berlin, Germany</h3>
                                 <p className="text-preset-6 text-Neutral-0">Tuesday, Aug 5, 2025</p>
                             </div>
                             <div className="flex gap-5 items-center">
-                                <div className="">
+                                <div className="w-28">
                                     <img src={sun} alt="Suuny" />
                                 </div>
                                 <h2 className="text-preset-1 text-Neutral-0">20&deg;</h2>
                             </div>
                         </div>
-                        <div className="grid grid-cols-2 gap-4">
+                        <div className="grid grid-cols-2 gap-4 sm:grid-cols-4 sm:gap-5 md:gap-6">
                             {details}
                         </div>
                     </div>
 
                     <div className="flex flex-col gap-5">
-                        <h4 className="text-preset-5 text-Neutral-0 ">Daily forecast</h4>
-                        <div className="grid grid-cols-3 gap-4">
+                        <h4 className="text-preset-5 text-Neutral-0">Daily forecast</h4>
+                        <div className="grid grid-cols-3 gap-4 sm:grid-cols-7">
                             {dailyForecasts}
                         </div>
                     </div>
                 </section>
-                <section className="bg-Neutal-800 rounded-[20px] px-4 py-5 flex flex-col gap-4">
+                <section className="bg-Neutal-800 rounded-[20px] px-4 py-5 flex flex-col gap-4 sm:p-6 md:grow">
                     <div className="flex items-center justify-between">
-                        <h4 className="text-preset-5 text-Neutral-0">Hourly forecasts</h4>
-                        <button className="bg-Neutral-600 rounded-lg flex px-4 py-2 gap-3">
+                        <h4 className="text-preset-5 text-Neutral-0">Hourly forecast</h4>
+                        <button className="cursor-pointer bg-Neutral-600 rounded-lg flex px-4 py-2 gap-3 hover:bg-Neutral-700 focus:outline-1 focus:outline-Neutral-0 focus:outline-offset-2">
                             <span className="text-preset-7 text-Neutral-0">Tuesday</span>
                             <img src={dropdown} alt="" />
                         </button>

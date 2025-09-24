@@ -26,7 +26,7 @@ export function Forecast(props){
 
 export function HourlyForeCast(props){
     return(
-        <div className="bg-Neutral-700 rounded-lg px-3 p-[10px] flex items-center justify-between">
+        <div className="bg-Neutral-700 rounded-lg px-3 py-2.5 flex items-center justify-between">
             <div className="flex items-center gap-2">
                 <div className="w-10">
                     <img src={props.weatherIcon} alt="" />
