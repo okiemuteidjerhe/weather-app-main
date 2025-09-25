@@ -1,40 +1,13 @@
 import search from "../assets/images/icon-search.svg"
 import sun from "../assets/images/icon-sunny.webp"
 import dropdown from "../assets/images/icon-dropdown.svg"
-import WeatherDetails, {Forecast, HourlyForeCast} from "./WeatherDetails"
+import loader from '../assets/images/loading.svg'
+import WeatherDetails, {Forecast, HourlyForeCast, Days, Cities} from "./WeatherDetails"
+import { useState } from "react"
+import { useFormStatus } from "react-dom"
 
 
-const weatherDetails = [
-    {
-        title: "Feels Like",
-        value: 18, 
-        unit: "\u00B0"
-    },
-    {
-        title: "Humidity",
-        value: 46, 
-        unit: "%"
-    },
-    {
-        title: "Wind",
-        value: 14,
-        unit: " km/h"
-    },
-    {
-        title: "Precipitation",
-        value: 0,
-        unit: " mm"
-    }
-]
 
-const details = weatherDetails.map(detail => {
-    return <WeatherDetails
-        key = {detail.title}
-        title = {detail.title}
-        unit = {detail.unit}
-        value = {detail.value}
-    />
-})
 
 
 const forecasts = [
@@ -151,33 +124,181 @@ const hourlyForeCast = hourly.map((hour, index) => {
     )
 })
 
-export default function MainContent(){
+const days = ['Monday', "Tuesday", "Wednesday", "Thursday", 'Friday', 'Saturday', "Sunday"]
+
+const daysDropdown = days.map(d => {
     return(
-        <main className="px-4 mb-8 sm:px-6 md:px-28">
+        <Days
+            key = {d}
+            day = {d}
+        />
+    )
+})
+
+function LoadingMessage(){
+    const {pending} = useFormStatus();
+    return(
+        pending ? (
+                    <div className="absolute left-0 right-0 mt-2.5 bg-Neutal-800 p-2 rounded-xl flex items-center gap-2.5">
+                        <img src={loader} alt="" className="w-4 animate-spin"/>
+                        <p className="text-prest-7 text-Neutral-0">Search in progress</p>
+                    </div>  
+                  ) : null
+    )
+}
+
+export default function MainContent(){
+    const [results, setResults] = useState([]);
+    const [weatherDeets, setWeatherDeets] = useState(null)
+    const [loading, setLoading] = useState(false)
+    const [chosen, setChosen] = useState(null)
+    
+    const searchCity = async (formData) => {
+        const input = Object.fromEntries(formData);
+        const url = `https://geocoding-api.open-meteo.com/v1/search?name=${input.city}&count=10&language=en&format=json`;
+        console.log(url)
+
+        try{
+            const response = await fetch(url);
+    
+            if(!response){
+                throw new Error(`Resonse Status: ${response.status}. Not found or what?`)
+            }
+
+            const data = await response.json()
+            console.log(data)
+
+            if(data.results){
+                setResults(data.results);
+            }else{
+                setResults([]);
+            }
+
+        }catch(error){
+            console.error(error.message, "Network??")
+        }
+    }
+
+
+    const getWeatherDetails = async (lat, lon, name, country) => {
+        const url = `https://api.open-meteo.com/v1/forecast?latitude=${lat}&longitude=${lon}&daily=weather_code,temperature_2m_max,temperature_2m_min&hourly=temperature_2m,weather_code&current=temperature_2m,precipitation,relative_humidity_2m,apparent_temperature,weather_code,wind_speed_10m&wind_speed_unit=mph&temperature_unit=fahrenheit&precipitation_unit=inch`
+
+        console.log(url)
+        
+        try{
+            setResults([]);
+            setLoading(true)
+            setChosen({
+                name,
+                country
+            })
+            
+            const response = await fetch(url);
+
+            if(!response){
+                throw new Error(`Resonse Status: ${response.status}. Not found or what?`)
+            }
+
+            const data = await response.json();
+            console.log(data)
+
+            setWeatherDeets(data)
+        }catch(error){
+            console.error(error.message, "Network??")
+        }finally{
+            setLoading(false)
+        }
+    }
+
+    const cityDropdown = results.map(city => {
+    return(
+        <Cities 
+            key = {city.id}
+            name = {city.name}
+            lga = {city.admin2}
+            state = {city.admin1}
+            country = {city.country}
+            longitude = {city.longitude}
+            latitude = {city.latitude}
+            getWeatherDetails = {getWeatherDetails}
+        />
+    )
+})
+
+const weatherDetails = [
+    {
+        title: "Feels Like",
+        value: weatherDeets?.current?.apparent_temperature, 
+        unit: weatherDeets?.current_units?.apparent_temperature
+    },
+    {
+        title: "Humidity",
+        value: weatherDeets?.current?.relative_humidity_2m, 
+        unit: weatherDeets?.current_units?.relative_humidity_2m
+    },
+    {
+        title: "Wind",
+        value: weatherDeets?.current?.wind_speed_10m,
+        unit: weatherDeets?.current_units?.wind_speed_10m
+    },
+    {
+        title: "Precipitation",
+        value: weatherDeets?.current?.precipitation,
+        unit: weatherDeets?.current_units?.precipitation
+    }
+]
+
+const details = weatherDetails.map(detail => {
+    return <WeatherDetails
+        key = {detail.title}
+        title = {detail.title}
+        unit = {detail.unit}
+        value = {detail.value}
+    />
+})
+    return(
+        <main className="px-4 mb-8 sm:px-6 lg:px-28">
             <h1 className="my-12 text-center text-preset-2 text-Neutral-0 sm:px-[119px]">How is the sky looking today?</h1>
-            <form role="search" className="mb-8 flex flex-col gap-3 sm:flex-row sm:gap-4 md:px-[280px]">
-                <div className="flex py-4 px-6 gap-4 items-center bg-Neutral-700 rounded-xl hover:bg-Neutral-800 focus-within:outline-1 focus-within::outline-Neutral-0 focus-within:outline-offset-2 sm:grow">
-                    <img src={search} alt="" className="w-5 h-5"/>
-                    <input type="search" name="city" id="" placeholder="Search for a place..." className="outline-0 text-preset-5-medium text-Neutral-200 w-full" aria-label="Search for a place"/>
+            
+            <form action={searchCity} role="search" className="mb-8 flex flex-col gap-3 sm:flex-row sm:gap-4 lg:px-[280px]">
+                <div className="relative sm:grow">
+                    <div className="flex py-4 px-6 gap-4 items-center bg-Neutral-700 rounded-xl hover:bg-Neutral-800 focus-within:outline-1 focus-within::outline-Neutral-0 focus-within:outline-offset-2 ">
+                        <img src={search} alt="" className="w-5 h-5"/>
+                        <input type="search" name="city" id="" placeholder="Search for a place..." className="outline-0 text-preset-5-medium text-Neutral-200 w-full" aria-label="Search for a place"/>
+                    </div>
+
+                    <LoadingMessage/>
+
+                    {loading && (
+                    <div className="absolute left-0 right-0 mt-2.5 bg-Neutal-800 p-2 rounded-xl flex items-center gap-2.5">
+                        <img src={loader} alt="" className="w-4 animate-spin"/>
+                        <p className="text-prest-7 text-Neutral-0">Search in progress</p>
+                    </div> )}
+
+                    {results.length > 0 && (
+                        <div className="absolute left-0 right-0 mt-2.5 max-h-[184px] overflow-y-auto bg-Neutal-800 grid gap-1 p-2 rounded-xl">
+                            {cityDropdown}
+                        </div>
+                    )}
                 </div>
                 <button className="cursor-pointer bg-Blue-500 text-Neutral-0 rounded-xl py-4 px-6 text-preset-5-medium hover:bg-Blue-700 focus:outline-1 focus:outline-Blue-700 focus:outline-offset-2">Search</button>
             </form>
-            <div className="flex flex-col gap-8 md:flex-row">
-                <section className="flex flex-col gap-8 md:justify-between">
-                    <div className="flex flex-col gap-5 md:gap-8">
+            <div className="flex flex-col gap-8 lg:flex-row">
+                <section className="flex flex-col gap-8 lg:justify-between">
+                    <div className="flex flex-col gap-5 lg:gap-8">
                         <div className="bg-small  rounded-[20px] flex flex-col gap-4 px-6 py-10 sm:bg-large sm:px-6 sm:py-20 sm:flex-row sm:items-center sm:justify-between">
                             <div className="flex flex-col gap-3 items-center">
-                                <h3 className="text-preset-4 text-Neutral-0">Berlin, Germany</h3>
+                                <h3 className="text-preset-4 text-Neutral-0">{chosen ? `${chosen?.name}, ${chosen?.country}`: `Berlin, Germany`}  </h3>
                                 <p className="text-preset-6 text-Neutral-0">Tuesday, Aug 5, 2025</p>
                             </div>
                             <div className="flex gap-5 items-center">
                                 <div className="w-28">
                                     <img src={sun} alt="Suuny" />
                                 </div>
-                                <h2 className="text-preset-1 text-Neutral-0">20&deg;</h2>
+                                <h2 className="text-preset-1 text-Neutral-0">{weatherDeets? `${weatherDeets?.current?.temperature_2m}${weatherDeets?.current_units?.temperature_2m}`: `0\u00B0`}</h2>
                             </div>
                         </div>
-                        <div className="grid grid-cols-2 gap-4 sm:grid-cols-4 sm:gap-5 md:gap-6">
+                        <div className="grid grid-cols-2 gap-4 sm:grid-cols-4 sm:gap-5 lg:gap-6">
                             {details}
                         </div>
                     </div>
@@ -189,13 +310,18 @@ export default function MainContent(){
                         </div>
                     </div>
                 </section>
-                <section className="bg-Neutal-800 rounded-[20px] px-4 py-5 flex flex-col gap-4 sm:p-6 md:grow">
+                <section className="bg-Neutal-800 rounded-[20px] px-4 py-5 flex flex-col gap-4 sm:p-6 lg:grow">
                     <div className="flex items-center justify-between">
                         <h4 className="text-preset-5 text-Neutral-0">Hourly forecast</h4>
-                        <button className="cursor-pointer bg-Neutral-600 rounded-lg flex px-4 py-2 gap-3 hover:bg-Neutral-700 focus:outline-1 focus:outline-Neutral-0 focus:outline-offset-2">
-                            <span className="text-preset-7 text-Neutral-0">Tuesday</span>
-                            <img src={dropdown} alt="" />
-                        </button>
+                        <div className="relative z-0">
+                            <button className="cursor-pointer bg-Neutral-600 rounded-lg flex px-4 py-2 gap-3 hover:bg-Neutral-700 focus:outline-1 focus:outline-Neutral-0 focus:outline-offset-2">
+                                <span className="text-preset-7 text-Neutral-0">Tuesday</span>
+                                <img src={dropdown} alt="" />
+                            </button>
+                            <div className="absolute right-0 mt-2.5 bg-Neutal-800 rounded-xl p-2 w-[214px] grid gap-1">
+                                {daysDropdown}
+                            </div>
+                        </div>
                     </div>
                     <div className="flex flex-col gap-4">
                         {hourlyForeCast}

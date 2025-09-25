@@ -15,6 +15,7 @@
     --color-Blue-700: hsl(248, 70%, 36%);
     --font-DM-Sans: 'DM-Sans', sans-serif;
     --font-Bricolage: "Bricolage Grotesque", sans-serif;
+    --breakpoint-lg: 1280px;
 }
 
 @layer base {
@@ -112,3 +113,10 @@
     background-repeat: no-repeat;
     background-size: cover;
 }
+
+
+/* https://api.open-meteo.com/v1/forecast?latitude=10&longitude=8&daily=weather_code,temperature_2m_max,temperature_2m_min&hourly=temperature_2m,weather_code&current=temperature_2m,precipitation,relative_humidity_2m,apparent_temperature,weather_code,wind_speed_10m&bounding_box=-90,-180,90,180 
+
+
+
+*/
