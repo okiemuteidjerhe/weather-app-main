@@ -1,139 +1,18 @@
 import search from "../assets/images/icon-search.svg"
 import sun from "../assets/images/icon-sunny.webp"
+import rain from "../assets/images/icon-rain.webp"
+import snow from "../assets/images/icon-snow.webp"
+import storm from "../assets/images/icon-storm.webp"
+import cloudy from "../assets/images/icon-partly-cloudy.webp"
+import overcast from "../assets/images/icon-overcast.webp"
+import fog from "../assets/images/icon-fog.webp"
+import drizzle from "../assets/images/icon-drizzle.webp"
 import dropdown from "../assets/images/icon-dropdown.svg"
-import loader from '../assets/images/loading.svg'
+import loader from '../assets/images/icon-loading.svg'
 import WeatherDetails, {Forecast, HourlyForeCast, Days, Cities} from "./WeatherDetails"
-import { useState } from "react"
+import { useEffect, useState } from "react"
 import { useFormStatus } from "react-dom"
 
-
-
-
-
-const forecasts = [
-    {
-        day: "Tue",
-        weatherIcon: sun,
-        high: 20,
-        low: 14 
-    },
-    {
-        day: "Wed",
-        weatherIcon: sun,
-        high: 20,
-        low: 14 
-    },
-    {
-        day: "Thu",
-        weatherIcon: sun,
-        high: 20,
-        low: 14 
-    },
-    {
-        day: "Fri",
-        weatherIcon: sun,
-        high: 20,
-        low: 14 
-    },
-    {
-        day: "Sat",
-        weatherIcon: sun,
-        high: 20,
-        low: 14 
-    },
-    {
-        day: "Sun",
-        weatherIcon: sun,
-        high: 20,
-        low: 14 
-    },
-    {
-        day: "Mon",
-        weatherIcon: sun,
-        high: 20,
-        low: 14 
-    },
-]
-
-const dailyForecasts = forecasts.map((forecast, index) => {
-    let value = index + 1
-    return(
-        <Forecast
-        key = {value}
-        day = {forecast.day}
-        weatherIcon = {forecast.weatherIcon}
-        high = {forecast.high}
-        low = {forecast.low}
-        />
-    )
-})
-
-
-const hourly = [
-    {
-        weatherIcon: sun,
-        time: "4PM",
-        temp: 29
-    },
-    {
-        weatherIcon: sun,
-        time: "5PM",
-        temp: 29
-    },
-    {
-        weatherIcon: sun,
-        time: "6PM",
-        temp: 29
-    },
-    {
-        weatherIcon: sun,
-        time: "7PM",
-        temp: 29
-    },
-    {
-        weatherIcon: sun,
-        time: "8PM",
-        temp: 29
-    },
-    {
-        weatherIcon: sun,
-        time: "9PM",
-        temp: 29
-    },
-    {
-        weatherIcon: sun,
-        time: "10PM",
-        temp: 29
-    },
-    {
-        weatherIcon: sun,
-        time: "11PM",
-        temp: 29
-    },
-]
-
-const hourlyForeCast = hourly.map((hour, index) => {
-    let keyValue = index + 1
-    return (
-        <HourlyForeCast
-        key = {keyValue}
-        weatherIcon = {hour.weatherIcon}
-        time = {hour.time}
-        temp = {hour.temp}
-        />
-    )
-})
-
-const days = ['Monday', "Tuesday", "Wednesday", "Thursday", 'Friday', 'Saturday', "Sunday"]
-
-const daysDropdown = days.map(d => {
-    return(
-        <Days
-            key = {d}
-            day = {d}
-        />
-    )
-})
 
 function LoadingMessage(){
     const {pending} = useFormStatus();
@@ -149,9 +28,9 @@ function LoadingMessage(){
 
 export default function MainContent(){
     const [results, setResults] = useState([]);
-    const [weatherDeets, setWeatherDeets] = useState(null)
-    const [loading, setLoading] = useState(false)
-    const [chosen, setChosen] = useState(null)
+    const [weatherDeets, setWeatherDeets] = useState(null);
+    const [loading, setLoading] = useState(false);
+    const [chosen, setChosen] = useState(null);
     
     const searchCity = async (formData) => {
         const input = Object.fromEntries(formData);
@@ -188,10 +67,7 @@ export default function MainContent(){
         try{
             setResults([]);
             setLoading(true)
-            setChosen({
-                name,
-                country
-            })
+            
             
             const response = await fetch(url);
 
@@ -203,6 +79,10 @@ export default function MainContent(){
             console.log(data)
 
             setWeatherDeets(data)
+            setChosen({
+                name,
+                country,
+            })
         }catch(error){
             console.error(error.message, "Network??")
         }finally{
@@ -229,12 +109,12 @@ const weatherDetails = [
     {
         title: "Feels Like",
         value: weatherDeets?.current?.apparent_temperature, 
-        unit: weatherDeets?.current_units?.apparent_temperature
+        unit: "\u00B0"
     },
     {
         title: "Humidity",
         value: weatherDeets?.current?.relative_humidity_2m, 
-        unit: weatherDeets?.current_units?.relative_humidity_2m
+        unit: "%"
     },
     {
         title: "Wind",
@@ -256,6 +136,168 @@ const details = weatherDetails.map(detail => {
         value = {detail.value}
     />
 })
+
+const images = {
+            0 : sun, 
+            1 : cloudy,
+            2 : cloudy,
+            3 : overcast,
+            45 : fog,
+            46 : fog,
+            51 : drizzle,
+            53 : drizzle,
+            55 : drizzle,
+            56 : drizzle,
+            57 : drizzle,
+            61 : rain,
+            63 : rain,
+            65 : rain, 
+            66 : rain, 
+            67 : rain, 
+            71: snow,
+            73: snow,
+            75: snow,
+            77: snow,
+            80: rain,
+            81: rain,
+            82 : rain,
+            85 : snow,
+            86 : snow,
+            95: storm,
+            96: storm,
+            99: storm
+        };
+
+        let curentDate;
+        let currentWeather;
+if(weatherDeets){
+    currentWeather = images[weatherDeets?.current?.weather_code]
+let weekday = new Date(weatherDeets?.current?.time)
+curentDate = weekday.toLocaleDateString("en-US", {
+            weekday: "long",
+            month: "short",
+            day: "numeric",
+            year: "numeric"
+        })
+}
+
+
+const forecasts = []
+
+if (weatherDeets?.daily){
+    for (let i = 0; i < weatherDeets.daily.time.length; i++) {
+    
+        const date = new Date(weatherDeets.daily.time[i]);
+        const day = date.toLocaleDateString('en-US', {weekday: "short"});
+
+        const imagesKeyCode = weatherDeets.daily.weather_code[i];
+        const weatherIcon = images[imagesKeyCode];
+
+        forecasts.push({
+            day,
+            weatherIcon,
+            high: weatherDeets.daily.temperature_2m_max[i].toFixed(0),
+            low: weatherDeets.daily.temperature_2m_min[i].toFixed(0), 
+        })
+    }
+}
+
+
+const dailyForecasts = forecasts.map((forecast, index) => {
+    let value = index + 1
+    return(
+        <Forecast
+        key = {value}
+        day = {forecast.day}
+        weatherIcon = {forecast.weatherIcon}
+        high = {forecast.high}
+        low = {forecast.low}
+        />
+    )
+})
+
+const hourly = []
+
+if(weatherDeets){
+    for (let i = 0; i < weatherDeets.hourly.time.length; i++) {
+        
+        const day = new Date(weatherDeets.hourly.time[i]);
+        const hour = day.toLocaleTimeString("en-Us", {
+            hour: "numeric",
+            hour12: true
+        });
+        
+        const weekday = day.toLocaleDateString("en-US", {weekday:"long"})
+
+        const code = weatherDeets.hourly.weather_code[i];
+        const weatherIcon = images[code];
+
+        hourly.push({
+            weatherIcon,
+            weekday,
+            time : hour,
+            temp : weatherDeets.hourly.temperature_2m[i].toFixed(0)
+        })
+    }
+}
+
+const allWeekdays = hourly.map(item => {
+    return item.weekday;
+})
+
+console.log(allWeekdays);
+
+const uniqueWeekdays = [...new Set(allWeekdays)];
+
+console.log(uniqueWeekdays);
+
+const [selectedDay, setSelectedDay] = useState(null)
+
+const handleSelectedDay = (day) =>{
+    setSelectedDay(day);
+}
+
+const daysDropdown = uniqueWeekdays.map(d => {
+    return(
+        <Days
+            key = {d}
+            day = {d}
+            handleSelectedDay = {handleSelectedDay}
+        />
+    )
+})
+
+useEffect(()=>{
+    if(uniqueWeekdays.length > 0 && selectedDay === null){
+        setSelectedDay(uniqueWeekdays[0]);
+    }
+}, [uniqueWeekdays, selectedDay])
+
+let filteredHours = [];
+
+if(selectedDay){
+    filteredHours = hourly.filter(item => {
+        return item.weekday === selectedDay
+    });
+}
+
+console.log(filteredHours)
+
+const hourlyForeCast = filteredHours.map((hour, index) => {
+    let keyValue = index + 1
+    return (
+        <HourlyForeCast
+        key = {keyValue}
+        weatherIcon = {hour.weatherIcon}
+        time = {hour.time}
+        temp = {hour.temp}
+        />
+    )
+})
+
+const toggleHourlyForecastDay = () =>{
+    
+}
     return(
         <main className="px-4 mb-8 sm:px-6 lg:px-28">
             <h1 className="my-12 text-center text-preset-2 text-Neutral-0 sm:px-[119px]">How is the sky looking today?</h1>
@@ -289,13 +331,13 @@ const details = weatherDetails.map(detail => {
                         <div className="bg-small  rounded-[20px] flex flex-col gap-4 px-6 py-10 sm:bg-large sm:px-6 sm:py-20 sm:flex-row sm:items-center sm:justify-between">
                             <div className="flex flex-col gap-3 items-center">
                                 <h3 className="text-preset-4 text-Neutral-0">{chosen ? `${chosen?.name}, ${chosen?.country}`: `Berlin, Germany`}  </h3>
-                                <p className="text-preset-6 text-Neutral-0">Tuesday, Aug 5, 2025</p>
+                                <p className="text-preset-6 text-Neutral-0">{curentDate  ? curentDate : `Tuesday, Aug 5, 2025`}</p>
                             </div>
                             <div className="flex gap-5 items-center">
                                 <div className="w-28">
-                                    <img src={sun} alt="Suuny" />
+                                    <img src={currentWeather} alt="" />
                                 </div>
-                                <h2 className="text-preset-1 text-Neutral-0">{weatherDeets? `${weatherDeets?.current?.temperature_2m}${weatherDeets?.current_units?.temperature_2m}`: `0\u00B0`}</h2>
+                                <h2 className="text-preset-1 text-Neutral-0">{weatherDeets? `${weatherDeets?.current?.temperature_2m.toFixed(0)}\u00B0`: `0\u00B0`}</h2>
                             </div>
                         </div>
                         <div className="grid grid-cols-2 gap-4 sm:grid-cols-4 sm:gap-5 lg:gap-6">
@@ -310,12 +352,12 @@ const details = weatherDetails.map(detail => {
                         </div>
                     </div>
                 </section>
-                <section className="bg-Neutal-800 rounded-[20px] px-4 py-5 flex flex-col gap-4 sm:p-6 lg:grow">
+                <section className="bg-Neutal-800 rounded-[20px] px-4 py-5 flex flex-col gap-4 sm:p-6 lg:w-[384px] lg:grow">
                     <div className="flex items-center justify-between">
                         <h4 className="text-preset-5 text-Neutral-0">Hourly forecast</h4>
                         <div className="relative z-0">
                             <button className="cursor-pointer bg-Neutral-600 rounded-lg flex px-4 py-2 gap-3 hover:bg-Neutral-700 focus:outline-1 focus:outline-Neutral-0 focus:outline-offset-2">
-                                <span className="text-preset-7 text-Neutral-0">Tuesday</span>
+                                <span className="text-preset-7 text-Neutral-0">{selectedDay}</span>
                                 <img src={dropdown} alt="" />
                             </button>
                             <div className="absolute right-0 mt-2.5 bg-Neutal-800 rounded-xl p-2 w-[214px] grid gap-1">
@@ -323,7 +365,7 @@ const details = weatherDetails.map(detail => {
                             </div>
                         </div>
                     </div>
-                    <div className="flex flex-col gap-4">
+                    <div className="flex flex-col gap-4 max-h-[608px] overflow-y-auto">
                         {hourlyForeCast}
                     </div>
                 </section>

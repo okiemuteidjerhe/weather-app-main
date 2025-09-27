@@ -51,7 +51,7 @@ export default function Layout(props){
                 <img src={dropdown} alt="" className='w-3.5 h-3.5 sm:w-4 sm:h-4'/>
             </button>
 
-            <div className='absolute z-[1] right-0 mt-2.5 grid gap-2 px-2 py-1.5 rounded-xl bg-Neutal-800 w-[214px]'>
+            <div className='hidden absolute z-[1] right-0 mt-2.5 grid gap-2 px-2 py-1.5 rounded-xl bg-Neutal-800 w-[214px]'>
                 <button 
                     className='px-2 py-2.5 text-preset-7 hover:bg-Neutral-700 focus:outline-1 focus:outline-Neutral-0 focus:outline-offset-2 rounded-xl text-left'
                 >

@@ -1,10 +1,10 @@
-import check from "../assets/images/check.svg"
+import check from "../assets/images/icon-checkmark.svg"
 
 export default function WeatherDetails(props){
     return(
         <div className="flex flex-col gap-6 p-5 bg-Neutral-700 rounded-xl">
             <p className="text-preset-6 text-Neutral-200">{props.title}</p>
-            <h3 className="text-preset-3 text-Neutral-0">{props.value ? props.value : ""}{props.unit? props.unit : ""}</h3>
+            <h3 className="text-preset-3 text-Neutral-0">{props.value !== null ? props.value : ""}{props.unit ? (props.title === 'Precipitation' || props.title === 'Wind'? ` ${props.unit}` : props.unit) : ''}</h3>
         </div>
     )
 }
@@ -57,7 +57,10 @@ export function Units(props){
 
 export function Days(props){
     return(
-        <button className="cursor-pointer text-left px-2 py-2.5 text-preset-7 text-Neutral-0 bg-Neutral-700 rounded-lg">{props.day}</button>
+        <button 
+            className="cursor-pointer text-left px-2 py-2.5 text-preset-7 text-Neutral-0 bg-Neutral-700 rounded-lg"
+            onClick={()=>{props.handleSelectedDay(props.day)}}
+        >{props.day}</button>
     )
 }
 
