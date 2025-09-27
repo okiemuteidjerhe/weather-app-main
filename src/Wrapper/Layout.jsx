@@ -2,6 +2,7 @@ import logo from '../assets/images/logo.svg'
 import gear from '../assets/images/icon-units.svg'
 import dropdown from '../assets/images/icon-dropdown.svg'
 import { Units } from '../components/WeatherDetails'
+import { useState } from 'react'
 
 const units = [
     {
@@ -33,6 +34,11 @@ const unitOptions = units.map(unit => {
 })
 
 export default function Layout(props){
+    const [isOpen, setIsOpen] = useState(false);
+    const handleToggle = () =>{
+        setIsOpen(prev => !prev);
+    }
+
     return(
         <>
         <header className='p-4 pb-0 flex justify-between items-center sm:p-6 sm:pb-0 lg:px-28 lg:pt-12'>
@@ -42,7 +48,8 @@ export default function Layout(props){
 
         <div className='relative'>
                 <button 
-                aria-expanded = 'false'
+                onClick={handleToggle}
+                aria-expanded = {isOpen ? true : false}
                 aria-label='Change units settings' 
                 className='cursor-pointer bg-Neutal-800 hover:bg-Neutral-700 focus:outline-1 focus:outline-Neutral-0 focus:outline-offset-2 rounded-sm flex items-center gap-1.5 px-2.5 py-2 sm:px-4 sm:py-3'
             >
@@ -51,7 +58,7 @@ export default function Layout(props){
                 <img src={dropdown} alt="" className='w-3.5 h-3.5 sm:w-4 sm:h-4'/>
             </button>
 
-            <div className='hidden absolute z-[1] right-0 mt-2.5 grid gap-2 px-2 py-1.5 rounded-xl bg-Neutal-800 w-[214px]'>
+            <div className={`absolute z-[1] right-0 mt-2.5 ${isOpen ?"grid" : "hidden"} gap-2 px-2 py-1.5 rounded-xl bg-Neutal-800 w-[214px]`}>
                 <button 
                     className='px-2 py-2.5 text-preset-7 hover:bg-Neutral-700 focus:outline-1 focus:outline-Neutral-0 focus:outline-offset-2 rounded-xl text-left'
                 >
