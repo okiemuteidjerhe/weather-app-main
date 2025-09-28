@@ -1,4 +1,6 @@
 import check from "../assets/images/icon-checkmark.svg"
+import { useContext } from "react"
+import {WeatherContext} from "../context/WeatherContext"
 
 export default function WeatherDetails(props){
     return(
@@ -39,16 +41,18 @@ export function HourlyForeCast(props){
 }
 
 export function Units(props){
+    const {unit} = useContext(WeatherContext)
     return(
         <div className='grid gap-2 border-b border-b-Neutral-600 last:border-b-0'>
             <p className='text-preset-8 px-2 pt-1.5'>{props.measurement}</p>
             <div className='grid gap-1'>
-                <p className='px-2 py-1.5 flex justify-between items-center bg-Neutral-700 rounded-lg'>
+                <p className={`px-2 py-1.5 flex justify-between items-center ${unit === 'metric' ? "bg-Neutral-700 rounded-lg" : '' }`}>
                     <span className='text-preset-7 text-Neutral-0'>{props.metricUnit}</span>
-                    <span><img src={check} alt="" /></span>
+                    {unit === 'metric' ? <span><img src={check} alt="" /></span> : null}
                 </p>
-                <p className='px-2 py-1.5 flex justify-between items-center'>
+                <p className={`px-2 py-1.5 flex justify-between items-center ${unit === 'imperial' ? "bg-Neutral-700 rounded-lg" : '' }`}>
                     <span className='text-preset-7 text-Neutral-0'>{props.imperialUnit}</span>
+                    {unit === 'imperial' ? <span><img src={check} alt="" /></span> : null}
                 </p>
             </div>
         </div>

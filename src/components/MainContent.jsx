@@ -10,8 +10,9 @@ import drizzle from "../assets/images/icon-drizzle.webp"
 import dropdown from "../assets/images/icon-dropdown.svg"
 import loader from '../assets/images/icon-loading.svg'
 import WeatherDetails, { Forecast, HourlyForeCast, Days, Cities } from "./WeatherDetails"
-import { useEffect, useState } from "react"
+import { useEffect, useState, useContext } from "react"
 import { useFormStatus } from "react-dom"
+import { WeatherContext } from "../context/WeatherContext"
 
 
 function LoadingMessage() {
@@ -33,13 +34,32 @@ export default function MainContent() {
     const [chosen, setChosen] = useState(null);
     const [openHourly, setOpenHourly] = useState(false);
 
+    const {unit} = useContext(WeatherContext);
+
+    const searchUnit = {
+        metric : {
+            wind: 'kmh',
+            temperature : "celsius",
+            precipitation : "mm"
+        },
+        imperial : {
+            wind: 'mph',
+            temperature : "fahrenheit",
+            precipitation : "inch"
+        }
+    }
+
+    const searchUnitKey = searchUnit[unit]
+    console.log(searchUnitKey)
+
     const handleToggleHourly = () => {
         setOpenHourly(prev => !prev);
     }
 
     const searchCity = async (formData) => {
-        const input = Object.fromEntries(formData);
-        const url = `https://geocoding-api.open-meteo.com/v1/search?name=${input.city}&count=10&language=en&format=json`;
+        const input = formData.get("city");
+        const encodedSearchQuery = encodeURIComponent(input);
+        const url = `https://geocoding-api.open-meteo.com/v1/search?name=${encodedSearchQuery}&count=10&language=en&format=json`;
         console.log(url)
 
         try {
@@ -65,7 +85,7 @@ export default function MainContent() {
 
 
     const getWeatherDetails = async (lat, lon, name, country) => {
-        const url = `https://api.open-meteo.com/v1/forecast?latitude=${lat}&longitude=${lon}&daily=weather_code,temperature_2m_max,temperature_2m_min&hourly=temperature_2m,weather_code&current=temperature_2m,precipitation,relative_humidity_2m,apparent_temperature,weather_code,wind_speed_10m&wind_speed_unit=mph&temperature_unit=fahrenheit&precipitation_unit=inch`
+        const url = `https://api.open-meteo.com/v1/forecast?latitude=${lat}&longitude=${lon}&daily=weather_code,temperature_2m_max,temperature_2m_min&hourly=temperature_2m,weather_code&current=temperature_2m,precipitation,relative_humidity_2m,apparent_temperature,weather_code,wind_speed_10m&wind_speed_unit=${searchUnitKey.wind}&temperature_unit=${searchUnitKey.temperature}&precipitation_unit=${searchUnitKey.precipitation}`
 
         console.log(url)
 
@@ -113,7 +133,7 @@ export default function MainContent() {
     const weatherDetails = [
         {
             title: "Feels Like",
-            value: weatherDeets?.current?.apparent_temperature,
+            value: weatherDeets?.current?.apparent_temperature.toFixed(0),
             unit: "\u00B0"
         },
         {

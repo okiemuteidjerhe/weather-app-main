@@ -3,11 +3,13 @@ import gear from '../assets/images/icon-units.svg'
 import dropdown from '../assets/images/icon-dropdown.svg'
 import { Units } from '../components/WeatherDetails'
 import { useState } from 'react'
+import { useContext } from 'react'
+import { WeatherContext } from '../context/WeatherContext'
 
 const units = [
     {
         measurement: "Temperature",
-        metricUnit: "Celcius (\u00B0C)",
+        metricUnit: "Celsius (\u00B0C)",
         imperialUnit: "Fahrenheit (\u00B0F)"
     },
     {
@@ -35,9 +37,22 @@ const unitOptions = units.map(unit => {
 
 export default function Layout(props){
     const [isOpen, setIsOpen] = useState(false);
+    const {unit, setUnit} = useContext(WeatherContext);
+
     const handleToggle = () =>{
         setIsOpen(prev => !prev);
     }
+
+    const handleUnitToggle = () =>{
+        setUnit(prev => {
+            if(prev === 'metric'){
+                return 'imperial';       
+            }else{
+                return 'metric';
+            }
+        })
+    }
+    
 
     return(
         <>
@@ -59,48 +74,13 @@ export default function Layout(props){
             </button>
 
             <div className={`absolute z-[1] right-0 mt-2.5 ${isOpen ?"grid" : "hidden"} gap-2 px-2 py-1.5 rounded-xl bg-Neutal-800 w-[214px]`}>
-                <button 
+                <button
+                    onClick={handleUnitToggle} 
                     className='px-2 py-2.5 text-preset-7 hover:bg-Neutral-700 focus:outline-1 focus:outline-Neutral-0 focus:outline-offset-2 rounded-xl text-left'
                 >
-                    Switch to Imperial
+                    Switch to {unit === "metric" ? 'Imperial' : 'Metric'}
                 </button>
                 {unitOptions}
-                {/* <div className='grid gap-2 border-b border-b-Neutral-600'>
-                    <p className='text-preset-8 px-2 pt-1.5'>Temperature</p>
-                    <div className='grid gap-1'>
-                        <p className='px-2 py-1.5 flex justify-between items-center bg-Neutral-700 rounded-lg'>
-                            <span className='text-preset-7 text-Neutral-0'>Celcius (&deg;C)</span>
-                            <span><img src={check} alt="" /></span>
-                        </p>
-                        <p className='px-2 py-1.5 flex justify-between items-center'>
-                            <span className='text-preset-7 text-Neutral-0'>Fahrenheit (&deg;F)</span>
-                        </p>
-                    </div>
-                </div>
-                <div className='grid gap-2 border-b border-b-Neutral-600'>
-                    <p className='text-preset-8 px-2 pt-1.5'>Wind Speed</p>
-                    <div className='grid gap-1'>
-                        <p className='px-2 py-1.5 flex justify-between items-center bg-Neutral-700 rounded-xl'>
-                            <span className='text-preset-7 text-Neutral-0'>km/h</span>
-                            <span><img src={check} alt="" /></span>
-                        </p>
-                        <p className='px-2 py-1.5 flex justify-between items-center'>
-                            <span className='text-preset-7 text-Neutral-0'>mph</span>
-                        </p>
-                    </div>
-                </div>
-                <div className='grid gap-2'>
-                    <p className='text-preset-8 px-2 pt-1.5'>Precipitation</p>
-                    <div>
-                        <p className='px-2 py-1.5 flex justify-between items-center bg-Neutral-700 rounded-xl'>
-                            <span className='text-preset-7 text-Neutral-0'>Millimeters (mm)</span>
-                            <span><img src={check} alt="" /></span>
-                        </p>
-                        <p className='px-2 py-1.5 flex justify-between items-center'>
-                            <span className='text-preset-7 text-Neutral-0'>Inches (in)</span>
-                        </p>
-                    </div>
-                </div> */}
             </div>
         </div>
         </header>
