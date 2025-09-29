@@ -4,7 +4,7 @@ import dropdown from '../assets/images/icon-dropdown.svg'
 import { Units } from '../components/WeatherDetails'
 import { useState } from 'react'
 import { useContext } from 'react'
-import { WeatherContext } from '../context/WeatherContext'
+import { UnitContext } from '../context/UnitContext'
 
 const units = [
     {
@@ -37,7 +37,7 @@ const unitOptions = units.map(unit => {
 
 export default function Layout(props){
     const [isOpen, setIsOpen] = useState(false);
-    const {unit, setUnit} = useContext(WeatherContext);
+    const {unit, setUnit} = useContext(UnitContext);
 
     const handleToggle = () =>{
         setIsOpen(prev => !prev);

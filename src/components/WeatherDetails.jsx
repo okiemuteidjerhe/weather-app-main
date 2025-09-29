@@ -1,6 +1,6 @@
 import check from "../assets/images/icon-checkmark.svg"
 import { useContext } from "react"
-import {WeatherContext} from "../context/WeatherContext"
+import {UnitContext} from "../context/UnitContext"
 
 export default function WeatherDetails(props){
     return(
@@ -41,7 +41,7 @@ export function HourlyForeCast(props){
 }
 
 export function Units(props){
-    const {unit} = useContext(WeatherContext)
+    const {unit} = useContext(UnitContext)
     return(
         <div className='grid gap-2 border-b border-b-Neutral-600 last:border-b-0'>
             <p className='text-preset-8 px-2 pt-1.5'>{props.measurement}</p>
@@ -62,7 +62,7 @@ export function Units(props){
 export function Days(props){
     return(
         <button 
-            className="cursor-pointer text-left px-2 py-2.5 text-preset-7 text-Neutral-0 bg-Neutral-700 rounded-lg"
+            className={`cursor-pointer text-left px-2 py-2.5 text-preset-7 text-Neutral-0 ${props.current === props.day ? 'bg-Neutral-700 rounded-lg' : ''}`}
             onClick={()=>{props.handleSelectedDay(props.day)}}
         >{props.day}</button>
     )
@@ -72,7 +72,15 @@ export function Cities(props){
     return(
         <button 
             className="cursor-pointer  px-2 py-2.5 text-preset-7 text-Neutral-0 text-left bg-Neutral-700 rounded-lg"
-            onClick={()=>props.getWeatherDetails(props.latitude, props.longitude, props.name, props.country)}
+            onClick={()=>{
+                let latitude = props.latitude;
+                let longitude = props.longitude;
+                let name = props.name;
+                let country = props.country;
+                
+                props.getWeatherDetails(latitude, longitude, name, country);
+                localStorage.setItem('lastWeatherLocation', JSON.stringify({latitude, longitude, name, country}))
+            }}
         >{props.name}, {props.lga}, {props.state}, {props.country}</button>
     )
 }

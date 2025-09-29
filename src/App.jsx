@@ -1,17 +1,17 @@
 import Layout from "./Wrapper/Layout"
 import MainContent from "./components/MainContent"
-import WeatherContextProvider from "./context/WeatherContext"
+import UnitContextProvider from "./context/UnitContext"
 
 
 function App() {
 
   return (
     <>
-    <WeatherContextProvider>
+    <UnitContextProvider>
       <Layout>
         <MainContent/>
       </Layout>
-    </WeatherContextProvider>  
+    </UnitContextProvider>  
     </>
   )
 }

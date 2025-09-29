@@ -12,7 +12,7 @@ import loader from '../assets/images/icon-loading.svg'
 import WeatherDetails, { Forecast, HourlyForeCast, Days, Cities } from "./WeatherDetails"
 import { useEffect, useState, useContext } from "react"
 import { useFormStatus } from "react-dom"
-import { WeatherContext } from "../context/WeatherContext"
+import { UnitContext } from "../context/UnitContext"
 
 
 function LoadingMessage() {
@@ -34,7 +34,7 @@ export default function MainContent() {
     const [chosen, setChosen] = useState(null);
     const [openHourly, setOpenHourly] = useState(false);
 
-    const {unit} = useContext(WeatherContext);
+    const {unit} = useContext(UnitContext);
 
     const searchUnit = {
         metric : {
@@ -50,7 +50,7 @@ export default function MainContent() {
     }
 
     const searchUnitKey = searchUnit[unit]
-    console.log(searchUnitKey)
+    /* console.log(searchUnitKey) */
 
     const handleToggleHourly = () => {
         setOpenHourly(prev => !prev);
@@ -87,7 +87,7 @@ export default function MainContent() {
     const getWeatherDetails = async (lat, lon, name, country) => {
         const url = `https://api.open-meteo.com/v1/forecast?latitude=${lat}&longitude=${lon}&daily=weather_code,temperature_2m_max,temperature_2m_min&hourly=temperature_2m,weather_code&current=temperature_2m,precipitation,relative_humidity_2m,apparent_temperature,weather_code,wind_speed_10m&wind_speed_unit=${searchUnitKey.wind}&temperature_unit=${searchUnitKey.temperature}&precipitation_unit=${searchUnitKey.precipitation}`
 
-        console.log(url)
+        /* console.log(url) */
 
         try {
             setResults([]);
@@ -107,6 +107,8 @@ export default function MainContent() {
             setChosen({
                 name,
                 country,
+                lat,
+                lon
             })
         } catch (error) {
             console.error(error.message, "Network??")
@@ -114,6 +116,21 @@ export default function MainContent() {
             setLoading(false)
         }
     }
+
+
+    useEffect(()=>{
+        let lastWeatherLocation = localStorage.getItem('lastWeatherLocation');
+        
+        if(lastWeatherLocation){
+            const parsed = JSON.parse(lastWeatherLocation);
+            getWeatherDetails(parsed.latitude, parsed.longitude, parsed.name, parsed.country)
+        }
+    }, [])
+    
+
+    useEffect(()=>{
+        if(chosen){getWeatherDetails(chosen.lat, chosen.lon, chosen.name, chosen.country);}
+    },[unit])
 
     const cityDropdown = results.map(city => {
         return (
@@ -270,11 +287,11 @@ export default function MainContent() {
         return item.weekday;
     })
 
-    console.log(allWeekdays);
+    /* console.log(allWeekdays); */
 
     const uniqueWeekdays = [...new Set(allWeekdays)];
 
-    console.log(uniqueWeekdays);
+    /* console.log(uniqueWeekdays); */
 
     const [selectedDay, setSelectedDay] = useState(null)
 
@@ -283,11 +300,14 @@ export default function MainContent() {
         setOpenHourly(false);
     }
 
+    /* console.log(selectedDay) */
+
     const daysDropdown = uniqueWeekdays.map(d => {
         return (
             <Days
                 key={d}
                 day={d}
+                current = {selectedDay}
                 handleSelectedDay={handleSelectedDay}
             />
         )
@@ -307,7 +327,7 @@ export default function MainContent() {
         });
     }
 
-    console.log(filteredHours)
+    /* console.log(filteredHours) */
 
     const hourlyForeCast = filteredHours.map((hour, index) => {
         let keyValue = index + 1
