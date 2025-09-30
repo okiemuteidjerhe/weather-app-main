@@ -11,11 +11,11 @@ import dropdown from "../assets/images/icon-dropdown.svg"
 import loader from '../assets/images/icon-loading.svg'
 import WeatherDetails, { Forecast, HourlyForeCast, Days, Cities } from "./WeatherDetails"
 import { useEffect, useState, useContext } from "react"
-import { useFormStatus } from "react-dom"
+/* import { useFormStatus } from "react-dom" */
 import { UnitContext } from "../context/UnitContext"
 
 
-function LoadingMessage() {
+/* function LoadingMessage() {
     const { pending } = useFormStatus();
     return (
         pending ? (
@@ -25,7 +25,7 @@ function LoadingMessage() {
             </div>
         ) : null
     )
-}
+} */
 
 export default function MainContent() {
     const [results, setResults] = useState([]);
@@ -33,6 +33,11 @@ export default function MainContent() {
     const [loading, setLoading] = useState(false);
     const [chosen, setChosen] = useState(null);
     const [openHourly, setOpenHourly] = useState(false);
+
+    const [notFound, setNotFound] = useState(false);
+    const [networkError, setNetworkError] = useState(false);
+    const [failedApi, setFailedApi] = useState(null);
+    const [query, setQuery] = useState('');
 
     const {unit} = useContext(UnitContext);
 
@@ -56,17 +61,24 @@ export default function MainContent() {
         setOpenHourly(prev => !prev);
     }
 
-    const searchCity = async (formData) => {
-        const input = formData.get("city");
-        const encodedSearchQuery = encodeURIComponent(input);
+    const searchCity = async (city) => {
+        setQuery(city);
+
+        const encodedSearchQuery = encodeURIComponent(city);
         const url = `https://geocoding-api.open-meteo.com/v1/search?name=${encodedSearchQuery}&count=10&language=en&format=json`;
         console.log(url)
 
+
+        setNotFound(false);
+        setNetworkError(false);
+
         try {
+            setLoading(true);
+
             const response = await fetch(url);
 
             if (!response) {
-                throw new Error(`Resonse Status: ${response.status}. Not found or what?`)
+                throw new Error(`Resonse Status: ${response.status}. Wrong spelling? Bad endpoint?`)
             }
 
             const data = await response.json()
@@ -76,10 +88,15 @@ export default function MainContent() {
                 setResults(data.results);
             } else {
                 setResults([]);
+                setNotFound(true);
             }
 
         } catch (error) {
-            console.error(error.message, "Network??")
+            console.error(error.message, "Network??");
+            setNetworkError(true);
+            setFailedApi("city");
+        } finally{
+            setLoading(false);
         }
     }
 
@@ -88,6 +105,7 @@ export default function MainContent() {
         const url = `https://api.open-meteo.com/v1/forecast?latitude=${lat}&longitude=${lon}&daily=weather_code,temperature_2m_max,temperature_2m_min&hourly=temperature_2m,weather_code&current=temperature_2m,precipitation,relative_humidity_2m,apparent_temperature,weather_code,wind_speed_10m&wind_speed_unit=${searchUnitKey.wind}&temperature_unit=${searchUnitKey.temperature}&precipitation_unit=${searchUnitKey.precipitation}`
 
         /* console.log(url) */
+        setNetworkError(false)
 
         try {
             setResults([]);
@@ -112,11 +130,29 @@ export default function MainContent() {
             })
         } catch (error) {
             console.error(error.message, "Network??")
+            setNetworkError(true);
+            setFailedApi("weather");
         } finally {
             setLoading(false)
         }
     }
 
+    const callSearchCity = (formData) => {
+        const input = formData.get("city");
+        searchCity(input);
+    }
+
+    const handleRetry = () =>{
+           if(failedApi === 'city'){
+            console.log('city')
+            searchCity(query);
+        }else{
+            console.log("GET");
+            let lastWeatherLocation = localStorage.getItem('lastWeatherLocation');
+            const parsed = JSON.parse(lastWeatherLocation);
+            getWeatherDetails(parsed.latitude, parsed.longitude, parsed.name, parsed.country)
+        }
+    }
 
     useEffect(()=>{
         let lastWeatherLocation = localStorage.getItem('lastWeatherLocation');
@@ -342,16 +378,23 @@ export default function MainContent() {
     })
     return (
         <main className="px-4 mb-8 sm:px-6 lg:px-28">
-            <h1 className="my-12 text-center text-preset-2 text-Neutral-0 sm:px-[119px]">How is the sky looking today?</h1>
+           {networkError ? (
+             <>
+             <p>OOPS</p>
+             <button onClick={handleRetry}>Retry</button>
+             </>
+           ):(
+             <>
+                <h1 className="my-12 text-center text-preset-2 text-Neutral-0 sm:px-[119px]">How is the sky looking today?</h1>
 
-            <form action={searchCity} role="search" className="mb-8 flex flex-col gap-3 sm:flex-row sm:gap-4 lg:px-[280px]">
+            <form action={callSearchCity} role="search" className="mb-8 flex flex-col gap-3 sm:flex-row sm:gap-4 lg:px-[280px]">
                 <div className="relative sm:grow">
                     <div className="flex py-4 px-6 gap-4 items-center bg-Neutral-700 rounded-xl hover:bg-Neutral-800 focus-within:outline-1 focus-within::outline-Neutral-0 focus-within:outline-offset-2 ">
                         <img src={search} alt="" className="w-5 h-5" />
                         <input type="search" name="city" id="" placeholder="Search for a place..." className="outline-0 text-preset-5-medium text-Neutral-200 w-full" aria-label="Search for a place" />
                     </div>
 
-                    <LoadingMessage />
+                    {/* <LoadingMessage /> */}
 
                     {loading && (
                         <div className="absolute left-0 right-0 mt-2.5 bg-Neutal-800 p-2 rounded-xl flex items-center gap-2.5">
@@ -367,7 +410,10 @@ export default function MainContent() {
                 </div>
                 <button className="cursor-pointer bg-Blue-500 text-Neutral-0 rounded-xl py-4 px-6 text-preset-5-medium hover:bg-Blue-700 focus:outline-1 focus:outline-Blue-700 focus:outline-offset-2">Search</button>
             </form>
-            <div className="flex flex-col gap-8 lg:flex-row">
+            {notFound ? (
+                        <p>Not Found</p>
+                    ) : (
+                            <div className="flex flex-col gap-8 lg:flex-row">
                 <section className="flex flex-col gap-8 lg:justify-between">
                     <div className="flex flex-col gap-5 lg:gap-8">
                         <div className="bg-small  rounded-[20px] flex flex-col gap-4 px-6 py-10 sm:bg-large sm:px-6 sm:py-20 sm:flex-row sm:items-center sm:justify-between">
@@ -415,6 +461,10 @@ export default function MainContent() {
                     </div>
                 </section>
             </div>
+                        )
+             }
+             </>
+           )}
         </main>
     )
 }
