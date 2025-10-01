@@ -3,8 +3,8 @@
 
 
 @theme {
-    --color-Neutal-900: hsl(243, 96%, 9%);
-    --color-Neutal-800: hsl(243, 27%, 20%);
+    --color-Neutral-900: hsl(243, 96%, 9%);
+    --color-Neutral-800: hsl(243, 27%, 20%);
     --color-Neutral-700: hsl(243, 23%, 24%);
     --color-Neutral-600: hsl(243, 23%, 30%);
     --color-Neutral-300: hsl(240, 6%, 70%);
@@ -20,7 +20,7 @@
 
 @layer base {
     body {
-        background-color: var(--color-Neutal-900);
+        background-color: var(--color-Neutral-900);
         color: var(--color-Neutral-0);
         width: 100vw;
         max-width: 1440px;

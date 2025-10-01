@@ -4,9 +4,9 @@ import {UnitContext} from "../context/UnitContext"
 
 export default function WeatherDetails(props){
     return(
-        <div className="flex flex-col gap-6 p-5 bg-Neutral-700 rounded-xl">
+        <div className={`flex flex-col gap-6 p-5 bg-Neutral-700 rounded-xl ${!props.unit ? 'animate-pulse' : null}`}>
             <p className="text-preset-6 text-Neutral-200">{props.title}</p>
-            <h3 className="text-preset-3 text-Neutral-0">{props.value !== null ? props.value : ""}{props.unit ? (props.title === 'Precipitation' || props.title === 'Wind'? ` ${props.unit}` : props.unit) : ''}</h3>
+            <h3 className="text-preset-3 text-Neutral-0">{props.value !== null? props.value : ""}{props.unit ? (props.title === 'Precipitation' || props.title === 'Wind'? ` ${props.unit}` : props.unit) : ""}</h3>
         </div>
     )
 }
@@ -79,7 +79,8 @@ export function Cities(props){
                 let country = props.country;
                 
                 props.getWeatherDetails(latitude, longitude, name, country);
-                localStorage.setItem('lastWeatherLocation', JSON.stringify({latitude, longitude, name, country}))
+                localStorage.setItem('lastWeatherLocation', JSON.stringify({latitude, longitude, name, country}));
+                /* props.setLocation({latitude, longitude, name, country}); */
             }}
         >{props.name}, {props.lga}, {props.state}, {props.country}</button>
     )

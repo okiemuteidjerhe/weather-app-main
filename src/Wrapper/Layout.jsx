@@ -55,7 +55,7 @@ export default function Layout(props){
     
 
     return(
-        <>
+        <div className='flex flex-col min-h-screen'>
         <header className='p-4 pb-0 flex justify-between items-center sm:p-6 sm:pb-0 lg:px-28 lg:pt-12'>
             <div className='w-32 sm:w-48 lg:w-52'>
                 <img src={logo} alt="" className='w-full h-auto object-contain'/>
@@ -66,14 +66,15 @@ export default function Layout(props){
                 onClick={handleToggle}
                 aria-expanded = {isOpen ? true : false}
                 aria-label='Change units settings' 
-                className='cursor-pointer bg-Neutal-800 hover:bg-Neutral-700 focus:outline-1 focus:outline-Neutral-0 focus:outline-offset-2 rounded-sm flex items-center gap-1.5 px-2.5 py-2 sm:px-4 sm:py-3'
+                className='cursor-pointer bg-Neutral-800 hover:bg-Neutral-700 focus:outline-1 focus:outline-Neutral-0 focus:outline-offset-2 rounded-sm flex items-center gap-1.5 px-2.5 py-2 sm:px-4 sm:py-3'
             >
                 <img src={gear} alt="" className='w-3.5 h-3.5 sm:w-4 sm:h-4'/>
                 <span className='text-preset-8 text-Neutral-0 sm:text-preset-7'>Units</span>
                 <img src={dropdown} alt="" className='w-3.5 h-3.5 sm:w-4 sm:h-4'/>
             </button>
 
-            <div className={`absolute z-[1] right-0 mt-2.5 ${isOpen ?"grid" : "hidden"} gap-2 px-2 py-1.5 rounded-xl bg-Neutal-800 w-[214px]`}>
+            <div className={`absolute z-[1] right-0 mt-2.5 ${isOpen ?"grid" : "hidden"} gap-2 px-2 py-1.5 rounded-xl bg-
+            -800 w-[214px]`}>
                 <button
                     onClick={handleUnitToggle} 
                     className='px-2 py-2.5 text-preset-7 hover:bg-Neutral-700 focus:outline-1 focus:outline-Neutral-0 focus:outline-offset-2 rounded-xl text-left'
@@ -95,6 +96,6 @@ export default function Layout(props){
             >Frontend Mentor</a>. 
             Coded by Okiemute.
         </footer>
-        </>
+        </div>
     )
 }
