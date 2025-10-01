@@ -73,7 +73,7 @@ export default function Layout(props){
                 <img src={dropdown} alt="" className='w-3.5 h-3.5 sm:w-4 sm:h-4'/>
             </button>
 
-            <div className={`absolute z-[1] right-0 mt-2.5 ${isOpen ?"grid" : "hidden"} gap-2 px-2 py-1.5 rounded-xl bg-
+            <div className={`absolute z-[1] right-0 mt-2.5 bg-Neutral-800 ${isOpen ?"grid" : "hidden"} gap-2 px-2 py-1.5 rounded-xl bg-
             -800 w-[214px]`}>
                 <button
                     onClick={handleUnitToggle} 
