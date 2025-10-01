@@ -485,8 +485,8 @@ export default function MainContent() {
                     <div className="flex flex-col gap-5 lg:gap-8">
                         <div className="bg-small  rounded-[20px] flex flex-col gap-4 px-6 py-10 sm:bg-large sm:px-6 sm:py-20 sm:flex-row sm:items-center sm:justify-between">
                             <div className="flex flex-col gap-3 items-center">
-                                <h3 className="text-preset-4 text-Neutral-0">{chosen  && `${chosen?.name}, ${chosen?.country}`}  </h3>
-                                <p className="text-preset-6 text-Neutral-0">{curentDate}</p>
+                                <h3 className="text-preset-4 text-Neutral-0 text-center sm:text-left">{chosen  && `${chosen?.name}, ${chosen?.country}`}  </h3>
+                                <p className="text-preset-6 text-Neutral-0 text-center sm:text-left">{curentDate}</p>
                             </div>
                             <div className="flex gap-5 items-center">
                                 <div className="w-28">
