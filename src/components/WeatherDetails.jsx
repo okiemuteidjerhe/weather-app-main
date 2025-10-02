@@ -43,14 +43,32 @@ export function HourlyForeCast(props){
 export function Units(props){
     const {unit} = useContext(UnitContext)
     return(
-        <div className='grid gap-2 border-b border-b-Neutral-600 last:border-b-0'>
-            <p className='text-preset-8 px-2 pt-1.5'>{props.measurement}</p>
+        <div
+            role="group"
+            aria-labelledby="heading"
+            className='grid gap-2 border-b border-b-Neutral-600 last:border-b-0'
+        >
+            <p 
+                id="heading"
+                className='text-preset-8 px-2 pt-1.5'
+            >
+                {props.measurement}
+            </p>
+
             <div className='grid gap-1'>
-                <p className={`px-2 py-1.5 flex justify-between items-center ${unit === 'metric' ? "bg-Neutral-700 rounded-lg" : '' }`}>
+                <p 
+                    role="option"
+                    aria-selected = {unit === 'metric' ? true : false}
+                    className={`px-2 py-1.5 flex justify-between items-center ${unit === 'metric' ? "bg-Neutral-700 rounded-lg" : '' }`}
+                >
                     <span className='text-preset-7 text-Neutral-0'>{props.metricUnit}</span>
                     {unit === 'metric' ? <span><img src={check} alt="" /></span> : null}
                 </p>
-                <p className={`px-2 py-1.5 flex justify-between items-center ${unit === 'imperial' ? "bg-Neutral-700 rounded-lg" : '' }`}>
+                <p 
+                    role="option"
+                    aria-selected = {unit === 'imperial' ? true : false}
+                    className={`px-2 py-1.5 flex justify-between items-center ${unit === 'imperial' ? "bg-Neutral-700 rounded-lg" : '' }`}
+                >
                     <span className='text-preset-7 text-Neutral-0'>{props.imperialUnit}</span>
                     {unit === 'imperial' ? <span><img src={check} alt="" /></span> : null}
                 </p>
@@ -62,6 +80,7 @@ export function Units(props){
 export function Days(props){
     return(
         <button 
+            role="menuitem"
             className={`cursor-pointer text-left px-2 py-2.5 text-preset-7 text-Neutral-0 ${props.current === props.day ? 'bg-Neutral-700 rounded-lg' : ''}`}
             onClick={()=>{props.handleSelectedDay(props.day)}}
         >{props.day}</button>
@@ -71,6 +90,7 @@ export function Days(props){
 export function Cities(props){
     return(
         <button 
+            role="menuitem"
             className="cursor-pointer  px-2 py-2.5 text-preset-7 text-Neutral-0 text-left bg-Neutral-700 rounded-lg"
             onClick={()=>{
                 let latitude = props.latitude;
@@ -80,7 +100,6 @@ export function Cities(props){
                 
                 props.getWeatherDetails(latitude, longitude, name, country);
                 localStorage.setItem('lastWeatherLocation', JSON.stringify({latitude, longitude, name, country}));
-                /* props.setLocation({latitude, longitude, name, country}); */
             }}
         >{props.name}, {props.lga}, {props.state}, {props.country}</button>
     )
