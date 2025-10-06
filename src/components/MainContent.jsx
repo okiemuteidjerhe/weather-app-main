@@ -557,7 +557,7 @@ export default function MainContent() {
                                             <h4 className="text-preset-5 text-Neutral-0">Hourly forecast</h4>
                                             <div className="relative z-0">
                                                 <button
-                                                    className="cursor-pointer bg-Neutral-600 rounded-lg flex px-4 py-2 gap-3 hover:bg-Neutral-700 focus:outline-1 focus:outline-Neutral-0 focus:outline-offset-2"
+                                                    className="cursor-pointer bg-Neutral-600 rounded-lg flex items-center px-4 py-2 gap-3 hover:bg-Neutral-700 focus:outline-1 focus:outline-Neutral-0 focus:outline-offset-2"
                                                     onClick={handleToggleHourly}
                                                     aria-expanded = {openHourly}
                                                     aria-haspopup = 'true'
