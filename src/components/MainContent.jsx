@@ -7,6 +7,7 @@ import cloudy from "../assets/images/icon-partly-cloudy.webp"
 import overcast from "../assets/images/icon-overcast.webp"
 import fog from "../assets/images/icon-fog.webp"
 import drizzle from "../assets/images/icon-drizzle.webp"
+import moon from '../assets/images/moon.png'
 import dropdown from "../assets/images/icon-dropdown.svg"
 import loader from '../assets/images/icon-loading.svg'
 import WeatherDetails, { Forecast, HourlyForeCast, Days, Cities } from "./WeatherDetails"
@@ -257,6 +258,7 @@ export default function MainContent() {
     /*Weather codes and corresponding images*/
     const images = {
         0: sun,
+        0.5: moon,
         1: cloudy,
         2: cloudy,
         3: overcast,
@@ -289,9 +291,11 @@ export default function MainContent() {
     /*Current date and weather*/
     let curentDate;
     let currentWeather;
+    let weekday;
+
     if (weatherDeets?.current) {
         currentWeather = images[weatherDeets.current.weather_code]
-        let weekday = new Date(weatherDeets.current.time)
+        weekday = new Date(weatherDeets.current.time)
         curentDate = weekday.toLocaleDateString("en-US", {
             weekday: "long",
             month: "short",
@@ -299,6 +303,7 @@ export default function MainContent() {
             year: "numeric"
         })
     }
+
 
 
     /*Daily forecast array populated from weatherDeets.daily */
@@ -344,20 +349,34 @@ export default function MainContent() {
         for (let i = 0; i < weatherDeets.hourly.time.length; i++) {
 
             const day = new Date(weatherDeets.hourly.time[i]);
-            const hour = day.toLocaleTimeString("en-Us", {
+            const hour = day.toLocaleTimeString("en-US", {
                 hour: "numeric",
                 hour12: true
             });
-
+            
             const weekday = day.toLocaleDateString("en-US", { weekday: "long" })
+            
+            const hr24 = day.getHours()
+
+            const isNight = hr24 >= 19 || hr24 < 6;
+            console.log(isNight)
+            
+            let weatherIcon;
 
             const code = weatherDeets.hourly.weather_code[i];
-            const weatherIcon = images[code];
+
+            if(code === 0 && isNight){
+                weatherIcon = images["0.5"];
+            }else{
+                weatherIcon = images[code];
+            }
+             
 
             /*Filled with objects*/
             hourly.push({
                 weatherIcon,
                 weekday,
+                /* hr24, */
                 time: hour,
                 temp: weatherDeets.hourly.temperature_2m[i].toFixed(0)
             })
@@ -407,6 +426,22 @@ export default function MainContent() {
     let filteredHours = [];
 
     if (selectedDay) {
+        
+       /* //Checker for the current hour in the current day
+        const today = weekday.toLocaleDateString('en-US', {weekday: "long"});
+        const currentHour = weekday.getHours();
+
+
+         //For current day, return hours greater than or equal to the current hour
+        if(today === selectedDay){
+            filteredHours = hourly.filter(item => {
+                return item.weekday === selectedDay && item.hr24 >= currentHour; 
+            })
+        }else{ //For others, skip this check.
+            filteredHours = hourly.filter(item => {
+            return item.weekday === selectedDay
+        });} */
+
         filteredHours = hourly.filter(item => {
             return item.weekday === selectedDay
         });
